@@ -1,10 +1,19 @@
 <?php
+/**
+ * TransformAttributesBehavior class file.
+ *
+ * @author Annenkov Yaroslav <ya@annenkov.ru>
+ * @link https://github.com/Yannn/transform-attributes-behavior
+ */
 
 /**
- * Class ActiveConvertBehavior
+ * Behavior for Yii1.x CActiveRecord
+ * Transform values of attributes before saving to DB and after reading from DB.
+ *
  * @method CActiveRecord getOwner()
+ * @version 0.1
  */
-class TransformAttributesBehavior extends CBehavior
+class TransformAttributesBehavior extends CActiveRecordBehavior
 {
     private $_backupAttributes = [];
     public $callbackToDb;
@@ -31,32 +40,41 @@ class TransformAttributesBehavior extends CBehavior
         };
     }
 
-
-    public function beforeSave()
+    /**
+     * @param CEvent $event
+     */
+    public function beforeSave($event)
     {
         $this->_convertAttributesToDB();
-        return true;
+        parent::beforeSave($event);
     }
 
-    public function afterSave()
+    /**
+     * @param CEvent $event
+     */
+    public function afterSave($event)
     {
+        // restore values of attributes saved in _convertAttributesToDB()
         if(count($this->_backupAttributes)) {
             foreach($this->_backupAttributes as $name => $value) {
                 $this->getOwner()->$name = $value;
             }
             $this->_backupAttributes = [];
         }
-        return true;
-    }
-
-    public function afterFind()
-    {
-        $this->_convertAttributesFromDB();
-        return true;
+        parent::afterSave($event);
     }
 
     /**
-     * Конвертируют атрибуты определенные в attributeConverted() перед сохранением в базу
+     * @param CEvent $event
+     */
+    public function afterFind($event)
+    {
+        $this->_convertAttributesFromDB();
+        parent::afterFind($event);
+    }
+
+    /**
+     * Convert values of attributes before saving to DB
      *
      * @see attributeConverted()
      */
@@ -80,7 +98,7 @@ class TransformAttributesBehavior extends CBehavior
     }
 
     /**
-     * Конвертируют атрибуты определенные в attributeConverted() после чтения из базы
+     * Convert values of attributes after reading from DB
      *
      * @see attributeConverted()
      */
