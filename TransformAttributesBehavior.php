@@ -18,6 +18,7 @@ class TransformAttributesBehavior extends CActiveRecordBehavior
     private $_backupAttributes = [];
     public $callbackToDb;
     public $callbackFromDb;
+    public $transformations = [];
 
     public function events()
     {
@@ -81,10 +82,7 @@ class TransformAttributesBehavior extends CActiveRecordBehavior
     private function _convertAttributesToDB()
     {
         $owner = $this->getOwner();
-        if(!method_exists($owner, 'attributeTransformations')) {
-            return;
-        }
-        if($attributes = $owner->attributeTransformations()) {
+        if($attributes = $this->_getTransformations()) {
             $this->_backupAttributes = array_merge($this->_backupAttributes, $owner->getAttributes(array_keys($attributes)));
             foreach($attributes as $name => $value) {
                 if(isset($value['to']) && is_callable($value['to'])) {
@@ -105,10 +103,7 @@ class TransformAttributesBehavior extends CActiveRecordBehavior
     private function _convertAttributesFromDB()
     {
         $owner = $this->getOwner();
-        if(!method_exists($owner, 'attributeTransformations')) {
-            return;
-        }
-        if($attributes = $owner->attributeTransformations()) {
+        if($attributes = $this->_getTransformations()) {
             foreach($attributes as $name => $value) {
                 if(isset($value['from']) && is_callable($value['from'])) {
                     $callback = $value['from'];
@@ -119,4 +114,28 @@ class TransformAttributesBehavior extends CActiveRecordBehavior
             }
         }
     }
+
+    /**
+     * Get array of transformations attributes.
+     * If in model exists method attributeTransformations(), data is fetched from him
+     * or from $this->transformations.
+     *
+     * @return array
+     */
+    private function _getTransformations()
+    {
+        if(method_exists($this->getOwner(), 'attributeTransformations')) {
+            $transformations = $this->getOwner()->attributeTransformations();
+        } else {
+            $transformations = $this->transformations;
+        }
+        foreach($transformations as $key => $value) {
+            if(is_numeric($key)) {
+                $transformations[$value] = [];
+                unset($transformations[$key]);
+            }
+        }
+        return $transformations;
+    }
+
 }
