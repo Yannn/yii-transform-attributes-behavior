@@ -81,10 +81,10 @@ class TransformAttributesBehavior extends CActiveRecordBehavior
     private function _convertAttributesToDB()
     {
         $owner = $this->getOwner();
-        if(!method_exists($owner, 'attributeConverted')) {
+        if(!method_exists($owner, 'attributeTransformations')) {
             return;
         }
-        if($attributes = $owner->attributeConverted()) {
+        if($attributes = $owner->attributeTransformations()) {
             $this->_backupAttributes = array_merge($this->_backupAttributes, $owner->getAttributes(array_keys($attributes)));
             foreach($attributes as $name => $value) {
                 if(isset($value['to']) && is_callable($value['to'])) {
@@ -105,10 +105,10 @@ class TransformAttributesBehavior extends CActiveRecordBehavior
     private function _convertAttributesFromDB()
     {
         $owner = $this->getOwner();
-        if(!method_exists($owner, 'attributeConverted')) {
+        if(!method_exists($owner, 'attributeTransformations')) {
             return;
         }
-        if($attributes = $owner->attributeConverted()) {
+        if($attributes = $owner->attributeTransformations()) {
             foreach($attributes as $name => $value) {
                 if(isset($value['from']) && is_callable($value['from'])) {
                     $callback = $value['from'];
