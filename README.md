@@ -2,6 +2,7 @@ TransformAttributesBehavior
 =======================
 Behavior for Yii1.x CActiveRecord.
 Transform values of attributes before saving to DB and after reading from DB.
+Use the beforeSave/afterSave handlers, so the transform when recording does work only with the methods save(), update(), insert().
 
 
 Functions for transformations
@@ -29,7 +30,9 @@ You can specify a separate transformation function for an attribute, see below.
 
 Attributes for transformations
 ------------
+
 Attributes for transform defined:
+
 1) In method behaviors() - property 'transformations'
 ~~~
     public function behaviors(){
@@ -41,6 +44,7 @@ Attributes for transform defined:
         );
     }
 ~~~
+
 2) In method attributeTransformations()
 ~~~
 public function attributeTransformations(){
