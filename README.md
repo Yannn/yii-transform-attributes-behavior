@@ -10,7 +10,8 @@ Functions for transformations
 You can assign functions for both transformations, if the functions is not assigned,
 the default setting when recording in database attributes is converted to JSON, when reading the contrary.
 You can overlap default functions and use e.g. serialize()/unserialize().
-~~~
+~~~php
+<?php
     public function behaviors(){
         return array(
             'TransformAttributesBehavior' => array(
@@ -25,7 +26,7 @@ You can overlap default functions and use e.g. serialize()/unserialize().
         );
     }
 ~~~
-You can specify a separate transformation function for an attribute, see below.
+You can specify a separate transformation function for an attribute, see examples below.
 
 
 Attributes for transformations
@@ -34,7 +35,8 @@ Attributes for transformations
 Attributes for transform defined:
 
 1) In method behaviors() - property 'transformations'
-~~~
+~~~php
+<?php
     public function behaviors(){
         return array(
             'TransformAttributesBehavior' => array(
@@ -46,14 +48,16 @@ Attributes for transform defined:
 ~~~
 
 2) In method attributeTransformations()
-~~~
+~~~php
+<?php
 public function attributeTransformations(){
         return array('attribute1', 'attribute2');
 }
 ~~~
 
 Also, in behaviors() and  attributeTransformations() can specify a separate transformation function for an attribute:
-~~~
+~~~php
+<?php
         // default functions for 'attribute1'
         array('attribute1',
               'attribute2' => array(
