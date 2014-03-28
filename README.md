@@ -15,7 +15,7 @@ You can overlap default functions and use e.g. serialize()/unserialize().
     public function behaviors(){
         return array(
             'TransformAttributesBehavior' => array(
-                'class' => 'application.components.transform-attributes-behavior.TransformAttributesBehavior',
+                'class' => 'application.components.TransformAttributesBehavior',
                 'callbackToDb' => function ($model, $attributeName) {
                         return is_string($model->$attributeName) ? $model->$attributeName : serialize($model->$attributeName);
                     },
@@ -40,7 +40,7 @@ Attributes for transform defined:
     public function behaviors(){
         return array(
             'TransformAttributesBehavior' => array(
-                'class' => 'application.components.transform-attributes-behavior.TransformAttributesBehavior',
+                'class' => 'application.components.TransformAttributesBehavior',
                 'transformations' => array('attribute1', 'attribute2')
             )
         );
